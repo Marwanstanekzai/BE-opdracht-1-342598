@@ -13,6 +13,7 @@ class MagazijnController extends Controller
             ->orderBy('Barcode', 'asc')
             ->get();
 
+        // var_dump($producten->all());exit();
         // Stuur de producten naar de overzichtspagina
         return view('magazijn.index', compact('producten'));
     }

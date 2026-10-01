@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $table = 'product';
+    protected $table = 'Product';
 
     protected $primaryKey = 'Id';
+
+    protected $guarded = [];
 
     public $timestamps = false;
 
@@ -21,7 +23,7 @@ class Product extends Model
     {
         return $this->belongsToMany(
             Allergeen::class,
-            'productperallergeen',
+            'ProductPerAllergeen',
             'ProductId',
             'AllergeenId'
         );
@@ -31,7 +33,7 @@ class Product extends Model
     {
         return $this->belongsToMany(
             Leverancier::class,
-            'productperleverancier',
+            'ProductPerLeverancier',
             'ProductId',
             'LeverancierId'
         );

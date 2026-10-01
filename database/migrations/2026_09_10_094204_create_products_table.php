@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('Product', function (Blueprint $table) {
-           $table->tinyIncrements('Id');
+            $table->tinyIncrements('Id');
             $table->string('Naam', 100);
             $table->string('Barcode', 13);
 
@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('Opmerking', 250)->nullable();
             $table->dateTime('DatumAangemaakt', 6);
             $table->dateTime('DatumGewijzigd', 6);
-
 
             $table->engine = 'InnoDB';
         });

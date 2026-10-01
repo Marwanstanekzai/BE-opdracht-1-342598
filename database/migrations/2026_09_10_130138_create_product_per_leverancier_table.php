@@ -32,7 +32,7 @@ return new class extends Migration
             // Foreign Keys
             $table->foreign('LeverancierId')
                 ->references('Id')
-                ->on('leverancier');
+                ->on('Leverancier');
 
             $table->foreign('ProductId')
                 ->references('Id')

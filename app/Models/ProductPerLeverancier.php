@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductPerLeverancier extends Model
 {
-    protected $table = 'productperleverancier';
+    protected $table = 'ProductPerLeverancier';
 
     protected $primaryKey = 'Id';
+
+    protected $guarded = [];
 
     public $timestamps = false;
 

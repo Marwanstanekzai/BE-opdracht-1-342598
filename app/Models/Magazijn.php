@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Magazijn extends Model
 {
-    protected $table = 'magazijn';
+    protected $table = 'Magazijn';
 
     protected $primaryKey = 'Id';
+
+    protected $guarded = [];
 
     public $timestamps = false;
 
