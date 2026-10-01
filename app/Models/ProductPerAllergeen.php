@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductPerAllergeen extends Model
 {
-    protected $table = 'productperallergeen';
+    protected $table = 'ProductPerAllergeen';
 
     protected $primaryKey = 'Id';
+
+    protected $guarded = [];
 
     public $timestamps = false;
 
