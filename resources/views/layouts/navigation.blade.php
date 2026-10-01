@@ -15,6 +15,11 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if (Auth::user()?->role === 'magazijnmedewerker')
+                        <x-nav-link :href="route('magazijn.index')" :active="request()->routeIs('magazijn.*')">
+                            {{ __('Overzicht Magazijn') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -70,6 +75,11 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @if (Auth::user()?->role === 'magazijnmedewerker')
+                <x-responsive-nav-link :href="route('magazijn.index')" :active="request()->routeIs('magazijn.*')">
+                    {{ __('Overzicht Magazijn') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
