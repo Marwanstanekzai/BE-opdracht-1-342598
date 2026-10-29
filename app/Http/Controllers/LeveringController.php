@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Leverancier;
 use App\Models\Product;
 use App\Models\ProductPerLeverancier;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,7 +73,7 @@ class LeveringController extends Controller
         }
 
         $datumEerstvolgende = $request->filled('datum_eerstvolgende_levering')
-            ? \Carbon\Carbon::parse($request->input('datum_eerstvolgende_levering'))->format('Y-m-d')
+            ? Carbon::parse($request->input('datum_eerstvolgende_levering'))->format('Y-m-d')
             : null;
 
         // Scenario 01: Product is actief (bv. Mintnopjes van Venco)
