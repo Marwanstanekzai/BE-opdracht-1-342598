@@ -25,7 +25,13 @@
                         href="{{ route('magazijn.index') }}"
                         class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal font-semibold"
                     >
-                        Overzicht Magazijn Jamin
+                        Overzicht producten Jamin
+                    </a>
+                    <a
+                        href="{{ route('leverancier.index') }}"
+                        class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal font-semibold"
+                    >
+                        Overzicht Leveranciers
                     </a>
                     @auth
                         <a
