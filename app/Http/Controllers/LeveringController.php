@@ -71,12 +71,16 @@ class LeveringController extends Controller
             ]);
         }
 
+        $datumEerstvolgende = $request->filled('datum_eerstvolgende_levering')
+            ? \Carbon\Carbon::parse($request->input('datum_eerstvolgende_levering'))->format('Y-m-d')
+            : null;
+
         // Scenario 01: Product is actief (bv. Mintnopjes van Venco)
         Leverancier::voegLeveringToe(
             $leverancierId,
             $productId,
             (int) $request->input('aantal'),
-            $request->input('datum_eerstvolgende_levering')
+            $datumEerstvolgende
         );
 
         return redirect()
