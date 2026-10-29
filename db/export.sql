@@ -31,7 +31,7 @@ INSERT INTO `Product` (`Id`, `Naam`, `Barcode`, `IsActief`, `Opmerking`, `DatumA
 (7, 'Witte Muizen', '8719587328256', 1, NULL, NOW(), NOW()),
 (8, 'Reuzen Slangen', '8719587325641', 1, NULL, NOW(), NOW()),
 (9, 'Zoute Rijen', '8719587322739', 1, NULL, NOW(), NOW()),
-(10, 'Winegums', '8719587327527', 1, NULL, NOW(), NOW()),
+(10, 'Winegums', '8719587327527', 0, NULL, NOW(), NOW()),
 (11, 'Drop Munten', '8719587322345', 1, NULL, NOW(), NOW()),
 (12, 'Kruis Drop', '8719587322265', 1, NULL, NOW(), NOW()),
 (13, 'Zoute Ruitjes', '8719587323256', 1, NULL, NOW(), NOW());
@@ -130,7 +130,8 @@ INSERT INTO `Leverancier` (`Id`, `Naam`, `ContactPersoon`, `LeverancierNummer`, 
 (2, 'Astra Sweets', 'Jasper del Monte', 'L1029284315', '06-39398734', 1, NULL, NOW(), NOW()),
 (3, 'Haribo', 'Sven Stalman', 'L1029324748', '06-24383291', 1, NULL, NOW(), NOW()),
 (4, 'Basset', 'Joyce Stelterberg', 'L1023845773', '06-48293823', 1, NULL, NOW(), NOW()),
-(5, 'De Bron', 'Remco Veenstra', 'L1023857736', '06-34291234', 1, NULL, NOW(), NOW());
+(5, 'De Bron', 'Remco Veenstra', 'L1023857736', '06-34291234', 1, NULL, NOW(), NOW()),
+(6, 'Quality Street', 'Johan Nooij', 'L1029234586', '06-23458456', 1, NULL, NOW(), NOW());
 
 CREATE TABLE `ProductPerLeverancier` (
   `Id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
@@ -163,10 +164,130 @@ INSERT INTO `ProductPerLeverancier` (`Id`, `LeverancierId`, `ProductId`, `DatumL
 (10, 3, 7, '2024-10-19', 23, '2024-10-26', 1, NULL, NOW(), NOW()),
 (11, 3, 8, '2024-10-10', 12, '2024-10-17', 1, NULL, NOW(), NOW()),
 (12, 3, 9, '2024-10-11', 1, '2024-10-18', 1, NULL, NOW(), NOW()),
-(13, 4, 10, '2024-10-16', 24, '2023-04-30', 1, NULL, NOW(), NOW()),
+(13, 4, 10, '2024-10-16', 24, '2023-04-30', 0, NULL, NOW(), NOW()),
 (14, 5, 11, '2024-10-10', 47, '2024-10-17', 1, NULL, NOW(), NOW()),
 (15, 5, 11, '2024-10-19', 60, '2024-10-26', 1, NULL, NOW(), NOW()),
 (16, 5, 12, '2024-10-11', 45, NULL, 1, NULL, NOW(), NOW()),
 (17, 5, 13, '2024-10-12', 23, NULL, 1, NULL, NOW(), NOW());
 
 SET FOREIGN_KEY_CHECKS=1;
+
+-- --------------------------------------------------------
+-- Stored Procedures for BE-opdracht 02
+-- --------------------------------------------------------
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `sp_GetLeveranciersOverzicht`$$
+CREATE PROCEDURE `sp_GetLeveranciersOverzicht`()
+BEGIN
+    SELECT 
+        l.Id,
+        l.Naam,
+        l.ContactPersoon,
+        l.LeverancierNummer,
+        l.Mobiel,
+        COUNT(DISTINCT ppl.ProductId) AS AantalVerschillendeProducten
+    FROM Leverancier l
+    LEFT JOIN ProductPerLeverancier ppl ON l.Id = ppl.LeverancierId
+    GROUP BY l.Id, l.Naam, l.ContactPersoon, l.LeverancierNummer, l.Mobiel
+    ORDER BY AantalVerschillendeProducten DESC, l.Naam ASC;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_GetLeverancierById`$$
+CREATE PROCEDURE `sp_GetLeverancierById`(
+    IN p_LeverancierId TINYINT UNSIGNED
+)
+BEGIN
+    SELECT 
+        l.Id,
+        l.Naam,
+        l.ContactPersoon,
+        l.LeverancierNummer,
+        l.Mobiel,
+        l.IsActief
+    FROM Leverancier l
+    WHERE l.Id = p_LeverancierId;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_GetGeleverdeProductenByLeverancierId`$$
+CREATE PROCEDURE `sp_GetGeleverdeProductenByLeverancierId`(
+    IN p_LeverancierId TINYINT UNSIGNED
+)
+BEGIN
+    SELECT 
+        p.Id AS ProductId,
+        p.Naam AS ProductNaam,
+        p.IsActief AS ProductIsActief,
+        m.AantalAanwezig,
+        m.VerpakkingsEenheid,
+        MAX(ppl.DatumLevering) AS LaatsteLevering
+    FROM ProductPerLeverancier ppl
+    INNER JOIN Product p ON ppl.ProductId = p.Id
+    LEFT JOIN Magazijn m ON p.Id = m.ProductId
+    WHERE ppl.LeverancierId = p_LeverancierId
+    GROUP BY p.Id, p.Naam, p.IsActief, m.AantalAanwezig, m.VerpakkingsEenheid
+    ORDER BY m.AantalAanwezig DESC, p.Naam ASC;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_GetProductVoorLevering`$$
+CREATE PROCEDURE `sp_GetProductVoorLevering`(
+    IN p_LeverancierId TINYINT UNSIGNED,
+    IN p_ProductId TINYINT UNSIGNED
+)
+BEGIN
+    SELECT 
+        l.Id AS LeverancierId,
+        l.Naam AS LeverancierNaam,
+        l.ContactPersoon,
+        l.LeverancierNummer,
+        l.Mobiel,
+        p.Id AS ProductId,
+        p.Naam AS ProductNaam,
+        p.IsActief AS ProductIsActief,
+        ppl.IsActief AS LeveringIsActief
+    FROM Leverancier l
+    INNER JOIN Product p ON p.Id = p_ProductId
+    LEFT JOIN ProductPerLeverancier ppl ON ppl.LeverancierId = l.Id AND ppl.ProductId = p.Id
+    WHERE l.Id = p_LeverancierId
+    LIMIT 1;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_AddProductLevering`$$
+CREATE PROCEDURE `sp_AddProductLevering`(
+    IN p_LeverancierId TINYINT UNSIGNED,
+    IN p_ProductId TINYINT UNSIGNED,
+    IN p_Aantal INT UNSIGNED,
+    IN p_DatumEerstVolgendeLevering DATE
+)
+BEGIN
+    INSERT INTO ProductPerLeverancier (
+        LeverancierId,
+        ProductId,
+        DatumLevering,
+        Aantal,
+        DatumEerstVolgendeLevering,
+        IsActief,
+        Opmerking,
+        DatumAangemaakt,
+        DatumGewijzigd
+    ) VALUES (
+        p_LeverancierId,
+        p_ProductId,
+        CURDATE(),
+        p_Aantal,
+        p_DatumEerstVolgendeLevering,
+        1,
+        NULL,
+        NOW(6),
+        NOW(6)
+    );
+
+    UPDATE Magazijn 
+    SET AantalAanwezig = COALESCE(AantalAanwezig, 0) + p_Aantal,
+        DatumGewijzigd = NOW(6)
+    WHERE ProductId = p_ProductId;
+END$$
+
+DELIMITER ;
+

@@ -14,10 +14,19 @@
                     <br>
 
                     @if (auth()->user()->role === 'magazijnmedewerker')
-    <a href="{{ route('magazijn.index') }}">
-        Overzicht Magazijn Jamin
-    </a>
-@endif
+                        <div class="space-y-2">
+                            <div>
+                                <a href="{{ route('magazijn.index') }}" class="text-blue-600 hover:underline font-semibold">
+                                    Overzicht producten Jamin
+                                </a>
+                            </div>
+                            <div>
+                                <a href="{{ route('leverancier.index') }}" class="text-blue-600 hover:underline font-semibold">
+                                    Overzicht Leveranciers
+                                </a>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

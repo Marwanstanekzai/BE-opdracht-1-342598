@@ -71,3 +71,30 @@
 | Opmerking | VARCHAR | 250 | Yes | Default NULL |
 | DatumAangemaakt | DATETIME | 6 | No | |
 | DatumGewijzigd | DATETIME | 6 | No | |
+
+## 7. Stored Procedures (BE-opdracht 02)
+
+### 7.1 `sp_GetLeveranciersOverzicht`
+- **Doel**: Haalt alle leveranciers op met het aantal verschillende geleverde producten (`COUNT(DISTINCT ppl.ProductId)`), aflopend gesorteerd op aantal verschillende producten.
+- **Parameters**: Geen.
+
+### 7.2 `sp_GetLeverancierById`
+- **Doel**: Haalt de gegevens op van één specifieke leverancier.
+- **Parameters**: `IN p_LeverancierId TINYINT UNSIGNED`
+
+### 7.3 `sp_GetGeleverdeProductenByLeverancierId`
+- **Doel**: Haalt alle door de leverancier geleverde producten op, inclusief voorraad en laatste leveringsdatum, aflopend gesorteerd op Aantal in magazijn.
+- **Parameters**: `IN p_LeverancierId TINYINT UNSIGNED`
+
+### 7.4 `sp_GetProductVoorLevering`
+- **Doel**: Haalt leverancier- en productgegevens op voor het leveringsformulier en controleert of het product actief is.
+- **Parameters**: `IN p_LeverancierId TINYINT UNSIGNED`, `IN p_ProductId TINYINT UNSIGNED`
+
+### 7.5 `sp_AddProductLevering`
+- **Doel**: Voegt een nieuwe levering toe aan `ProductPerLeverancier` en verhoogt de voorraad in `Magazijn`.
+- **Parameters**:
+  - `IN p_LeverancierId TINYINT UNSIGNED`
+  - `IN p_ProductId TINYINT UNSIGNED`
+  - `IN p_Aantal INT UNSIGNED`
+  - `IN p_DatumEerstVolgendeLevering DATE`
+
