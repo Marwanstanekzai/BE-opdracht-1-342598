@@ -44,6 +44,13 @@ Route::middleware(['auth', 'magazijnmedewerker'])->group(function () {
 
     Route::get('/leverancier/{id}/producten', [LeverancierController::class, 'producten'])
         ->name('leverancier.producten');
+
+    // User Story 02 — Toevoegen Product Levering
+    Route::get('/levering/{leverancierId}/{productId}/create', [LeveringController::class, 'create'])
+        ->name('levering.create');
+
+    Route::post('/levering/{leverancierId}/{productId}', [LeveringController::class, 'store'])
+        ->name('levering.store');
 });
 
 require __DIR__.'/auth.php';
