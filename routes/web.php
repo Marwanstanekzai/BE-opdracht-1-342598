@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AllergeenController;
+use App\Http\Controllers\LeverancierController;
 use App\Http\Controllers\LeveringController;
 use App\Http\Controllers\MagazijnController;
 use App\Http\Controllers\ProfileController;
@@ -36,6 +37,20 @@ Route::middleware(['auth', 'magazijnmedewerker'])->group(function () {
 
     Route::get('/allergeen/{id}', [AllergeenController::class, 'show'])
         ->name('allergeen.show');
+
+    // User Story 01 — Overzicht Leveranciers
+    Route::get('/leveranciers', [LeverancierController::class, 'index'])
+        ->name('leverancier.index');
+
+    Route::get('/leverancier/{id}/producten', [LeverancierController::class, 'producten'])
+        ->name('leverancier.producten');
+
+    // User Story 02 — Toevoegen Product Levering
+    Route::get('/levering/{leverancierId}/{productId}/create', [LeveringController::class, 'create'])
+        ->name('levering.create');
+
+    Route::post('/levering/{leverancierId}/{productId}', [LeveringController::class, 'store'])
+        ->name('levering.store');
 });
 
 require __DIR__.'/auth.php';
