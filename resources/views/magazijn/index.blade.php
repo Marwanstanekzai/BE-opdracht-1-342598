@@ -46,6 +46,12 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="mt-6 flex justify-end items-center">
+                    <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow-sm">
+                        Home
+                    </a>
+                </div>
             </div>
         </div>
     </div>

@@ -136,11 +136,18 @@ class LeverancierOverzichtTest extends TestCase
         $response->assertSee('L1029384719');
         $response->assertSee('06-28493827');
         $response->assertSee('📦');
+        $response->assertSee('Home');
+        $response->assertSee(route('dashboard'));
 
         // Test Geleverde producten screen for Venco
         $responseProducten = $this->actingAs($medewerker)->get(route('leverancier.producten', $venco->Id));
         $responseProducten->assertStatus(200);
         $responseProducten->assertSee('Geleverde Producten');
+        $responseProducten->assertSee('Naam product');
+        $responseProducten->assertSee('Aantal in magazijn');
+        $responseProducten->assertSee('Verpakkingseenheid');
+        $responseProducten->assertSee('Laatste levering');
+        $responseProducten->assertSee('Nieuwe levering');
         $responseProducten->assertSee('Venco');
         $responseProducten->assertSee('Bert van Linge');
         $responseProducten->assertSee('L1029384719');
@@ -153,6 +160,10 @@ class LeverancierOverzichtTest extends TestCase
         $responseProducten->assertSee('400');
         $responseProducten->assertSee('2,5 kg');
         $responseProducten->assertSee('➕');
+        $responseProducten->assertSee('Terug');
+        $responseProducten->assertSee('Home');
+        $responseProducten->assertSee(route('leverancier.index'));
+        $responseProducten->assertSee(route('dashboard'));
 
         // Verify sorting: Mintnopjes (453) should appear before Schoolkrijt (400)
         $this->assertGreaterThan(
@@ -192,5 +203,8 @@ class LeverancierOverzichtTest extends TestCase
         // 3-second redirect back to leverancier.index
         $response->assertSee('3000');
         $response->assertSee(route('leverancier.index'));
+        $response->assertSee('Terug');
+        $response->assertSee('Home');
+        $response->assertSee(route('dashboard'));
     }
 }

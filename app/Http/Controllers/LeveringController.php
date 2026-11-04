@@ -32,7 +32,7 @@ class LeveringController extends Controller
     }
 
     /**
-     * Scherm: Levering product (Wireframe 04)
+     * Scherm: Levering Product (Wireframe 04)
      * Toont gegevens van product en leverancier met invoervelden.
      */
     public function create(int $leverancierId, int $productId): View
@@ -53,7 +53,39 @@ class LeveringController extends Controller
     {
         $request->validate([
             'aantal' => 'required|integer|min:1',
-            'datum_eerstvolgende_levering' => 'nullable|date',
+            'datum_eerstvolgende_levering' => [
+                'nullable',
+                'string',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if ($value === null || $value === '') {
+                        return;
+                    }
+
+                    if (preg_match('/^\d{2}-\d{2}-\d{4}$/', $value)) {
+                        [$d, $m, $y] = array_map('intval', explode('-', $value));
+                        if (! checkdate($m, $d, $y)) {
+                            $fail('Voer een geldige datum in (dd-mm-jjjj).');
+                        }
+
+                        return;
+                    }
+
+                    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                        [$y, $m, $d] = array_map('intval', explode('-', $value));
+                        if (! checkdate($m, $d, $y)) {
+                            $fail('Voer een geldige datum in (dd-mm-jjjj).');
+                        }
+
+                        return;
+                    }
+
+                    try {
+                        Carbon::parse($value);
+                    } catch (\Exception) {
+                        $fail('Voer een geldige datum in (dd-mm-jjjj).');
+                    }
+                },
+            ],
         ]);
 
         $data = Leverancier::getProductVoorLevering($leverancierId, $productId);
@@ -69,12 +101,22 @@ class LeveringController extends Controller
             return view('levering.niet_actief', [
                 'melding' => $melding,
                 'leverancierId' => $leverancierId,
+                'data' => $data,
             ]);
         }
 
-        $datumEerstvolgende = $request->filled('datum_eerstvolgende_levering')
-            ? Carbon::parse($request->input('datum_eerstvolgende_levering'))->format('Y-m-d')
-            : null;
+        $datumInput = $request->input('datum_eerstvolgende_levering');
+        $datumEerstvolgende = null;
+
+        if ($request->filled('datum_eerstvolgende_levering')) {
+            if (preg_match('/^\d{2}-\d{2}-\d{4}$/', $datumInput)) {
+                $datumEerstvolgende = Carbon::createFromFormat('d-m-Y', $datumInput)->format('Y-m-d');
+            } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $datumInput)) {
+                $datumEerstvolgende = Carbon::createFromFormat('Y-m-d', $datumInput)->format('Y-m-d');
+            } else {
+                $datumEerstvolgende = Carbon::parse($datumInput)->format('Y-m-d');
+            }
+        }
 
         // Scenario 01: Product is actief (bv. Mintnopjes van Venco)
         Leverancier::voegLeveringToe(

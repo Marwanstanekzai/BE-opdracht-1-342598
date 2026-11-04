@@ -9,6 +9,8 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-gray-900">
 
+                <h3 class="text-xl font-bold mb-4">Levering Product</h3>
+
                 @if ($errors->any())
                     <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
                         <ul class="list-disc pl-5">
@@ -20,11 +22,11 @@
                 @endif
 
                 <div class="mb-6 space-y-1 bg-gray-50 p-4 rounded-md border border-gray-200">
-                    <p><strong>Naam leverancier:</strong> {{ $data->LeverancierNaam }}</p>
+                    <p><strong>Naam product:</strong> {{ $data->ProductNaam }}</p>
+                    <p><strong>Leverancier:</strong> {{ $data->LeverancierNaam }}</p>
                     <p><strong>Contactpersoon:</strong> {{ $data->ContactPersoon }}</p>
                     <p><strong>Leveranciernummer:</strong> {{ $data->LeverancierNummer }}</p>
                     <p><strong>Mobiel:</strong> {{ $data->Mobiel }}</p>
-                    <p><strong>Naam product:</strong> {{ $data->ProductNaam }}</p>
                 </div>
 
                 {{-- Wireframe 04 Formulier --}}
@@ -51,27 +53,36 @@
                             Datum eerstvolgende levering
                         </label>
                         <input 
-                            type="date" 
+                            type="text" 
                             name="datum_eerstvolgende_levering" 
                             id="datum_eerstvolgende_levering" 
                             value="{{ old('datum_eerstvolgende_levering') }}" 
+                            placeholder="dd-mm-jjjj"
                             class="w-full md:w-1/2 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
                         >
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center justify-between gap-4">
                         <button 
                             type="submit" 
                             class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-sm transition-colors"
                         >
                             Sla op
                         </button>
-                        <a 
-                            href="{{ route('leverancier.producten', $data->LeverancierId) }}" 
-                            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-md shadow-sm"
-                        >
-                            Terug
-                        </a>
+                        <div class="flex items-center gap-3">
+                            <a 
+                                href="{{ route('leverancier.producten', $data->LeverancierId) }}" 
+                                class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-md shadow-sm"
+                            >
+                                Terug
+                            </a>
+                            <a 
+                                href="{{ route('dashboard') }}" 
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow-sm"
+                            >
+                                Home
+                            </a>
+                        </div>
                     </div>
                 </form>
 

@@ -49,7 +49,12 @@ class ToevoegenProductLeveringTest extends TestCase
         $response->assertSee('Mintnopjes');
         $response->assertSee('Aantal producteenheden');
         $response->assertSee('Datum eerstvolgende levering');
+        $response->assertSee('dd-mm-jjjj');
         $response->assertSee('Sla op');
+        $response->assertSee('Terug');
+        $response->assertSee('Home');
+        $response->assertSee(route('leverancier.producten', $venco->Id));
+        $response->assertSee(route('dashboard'));
     }
 
     public function test_user_story_2_scenario_1_mintnopjes_van_venco(): void
@@ -94,12 +99,12 @@ class ToevoegenProductLeveringTest extends TestCase
             'DatumGewijzigd' => now(),
         ]);
 
-        // Submit new delivery: 25 units, next delivery 29 mei 2024 (2024-05-29)
+        // Submit new delivery: 25 units, next delivery 29-05-2024 (Dutch format dd-mm-jjjj)
         $response = $this->actingAs($medewerker)->post(
             route('levering.store', ['leverancierId' => $venco->Id, 'productId' => $mintnopjes->Id]),
             [
                 'aantal' => 25,
-                'datum_eerstvolgende_levering' => '2024-05-29',
+                'datum_eerstvolgende_levering' => '29-05-2024',
             ]
         );
 
@@ -174,6 +179,9 @@ class ToevoegenProductLeveringTest extends TestCase
         // 4-second redirect back to Geleverde producten van Basset
         $response->assertSee('4000');
         $response->assertSee(route('leverancier.producten', $basset->Id));
+        $response->assertSee('Terug');
+        $response->assertSee('Home');
+        $response->assertSee(route('dashboard'));
 
         // Ensure stock was NOT modified
         $magazijn->refresh();

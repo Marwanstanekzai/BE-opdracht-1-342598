@@ -45,6 +45,15 @@
                         </table>
                     </div>
                 @endif
+
+                <div class="mt-6 flex justify-end items-center gap-3">
+                    <a href="{{ route('magazijn.index') }}" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-md shadow-sm">
+                        Terug
+                    </a>
+                    <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow-sm">
+                        Home
+                    </a>
+                </div>
             </div>
         </div>
     </div>
