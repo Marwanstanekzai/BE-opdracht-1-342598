@@ -8,7 +8,7 @@ use Illuminate\Contracts\View\View;
 class LeverancierController extends Controller
 {
     /**
-     * Scherm: Overzicht Leverancier (Wireframe 01)
+     * Scherm: Overzicht Leverancier 
      * Toont alle leveranciers gesorteerd op aantal verschillende geleverde producten aflopend.
      */
     public function index(): View
@@ -19,7 +19,7 @@ class LeverancierController extends Controller
     }
 
     /**
-     * Scherm: Geleverde producten (Wireframe 02 & Wireframe 03)
+     * Scherm: Geleverde producten
      * Toont geleverde producten van een leverancier of melding indien geen leveringen.
      */
     public function producten(int $id): View

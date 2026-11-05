@@ -10,17 +10,16 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-class LeveringController extends Controller
+class LeveringController
 {
-    /**
-     * Bestaande show methode uit Opdracht 1 — niet wijzigen.
-     */
+    // Laat de leveringen van een product zien
+
     public function show($id): View
     {
-        // Zoek het gekozen product inclusief magazijn gegevens
+        // Zoek het product en de magazijngegevens op
         $product = Product::with('magazijn')->findOrFail($id);
 
-        // Haal alle leveringen van dit product op, gesorteerd op DatumLevering oplopend
+        // Haal de leveringen op en sorteer ze op datum
         $leveringen = ProductPerLeverancier::with('leverancier')
             ->where('ProductId', $id)
             ->orderBy('DatumLevering', 'asc')
@@ -31,14 +30,14 @@ class LeveringController extends Controller
         return view('levering.show', compact('product', 'leveringen', 'leverancier'));
     }
 
-    /**
-     * Scherm: Levering Product (Wireframe 04)
-     * Toont gegevens van product en leverancier met invoervelden.
-     */
+    // Laat het formulier zien om een levering toe te voegen
+
     public function create(int $leverancierId, int $productId): View
     {
+        // Haal het product en de leverancier op
         $data = Leverancier::getProductVoorLevering($leverancierId, $productId);
 
+        // Controleer of het product en de leverancier bestaan
         if (! $data) {
             abort(404, 'Product of leverancier niet gevonden');
         }
@@ -46,11 +45,11 @@ class LeveringController extends Controller
         return view('levering.create', compact('data'));
     }
 
-    /**
-     * Verwerk de nieuwe levering (User Story 02 — Scenario 01 & Scenario 02).
-     */
+    // Verwerk de nieuwe levering
+
     public function store(Request $request, int $leverancierId, int $productId): View|RedirectResponse
     {
+        // Controleer of het aantal en de datum goed zijn ingevuld
         $request->validate([
             'aantal' => 'required|integer|min:1',
             'datum_eerstvolgende_levering' => [
@@ -88,13 +87,15 @@ class LeveringController extends Controller
             ],
         ]);
 
+        // Haal het product en de leverancier opnieuw op
         $data = Leverancier::getProductVoorLevering($leverancierId, $productId);
 
+        // Controleer of het product en de leverancier bestaan
         if (! $data) {
             abort(404, 'Product of leverancier niet gevonden');
         }
 
-        // Scenario 02: Als product niet meer actief is (bv. Winegums van Basset)
+        // Controleer of het product nog actief is
         if (! $data->ProductIsActief || (isset($data->LeveringIsActief) && (int) $data->LeveringIsActief === 0)) {
             $melding = "Het product {$data->ProductNaam} van de leverancier {$data->LeverancierNaam} wordt niet meer geproduceerd";
 
@@ -105,9 +106,11 @@ class LeveringController extends Controller
             ]);
         }
 
+        // Haal de ingevulde datum op
         $datumInput = $request->input('datum_eerstvolgende_levering');
         $datumEerstvolgende = null;
 
+        // Zet de datum om naar het juiste formaat
         if ($request->filled('datum_eerstvolgende_levering')) {
             if (preg_match('/^\d{2}-\d{2}-\d{4}$/', $datumInput)) {
                 $datumEerstvolgende = Carbon::createFromFormat('d-m-Y', $datumInput)->format('Y-m-d');
@@ -118,7 +121,7 @@ class LeveringController extends Controller
             }
         }
 
-        // Scenario 01: Product is actief (bv. Mintnopjes van Venco)
+        // Sla de nieuwe levering op
         Leverancier::voegLeveringToe(
             $leverancierId,
             $productId,
