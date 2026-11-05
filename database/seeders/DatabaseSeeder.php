@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ProductSeeder::class,
             AllergeenSeeder::class,
+            ContactSeeder::class,
             LeverancierSeeder::class,
             MagazijnSeeder::class,
             ProductPerAllergeenSeeder::class,
