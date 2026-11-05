@@ -51,6 +51,19 @@ Route::middleware(['auth', 'magazijnmedewerker'])->group(function () {
 
     Route::post('/levering/{leverancierId}/{productId}', [LeveringController::class, 'store'])
         ->name('levering.store');
+
+    // BE-opdracht 03 — User Story 01: Wijzigen Leverancier
+    Route::get('/leveranciers/wijzigen', [LeverancierController::class, 'wijzigenIndex'])
+        ->name('leverancier.wijzigen');
+
+    Route::get('/leverancier/{id}/details', [LeverancierController::class, 'details'])
+        ->name('leverancier.details');
+
+    Route::get('/leverancier/{id}/edit', [LeverancierController::class, 'edit'])
+        ->name('leverancier.edit');
+
+    Route::put('/leverancier/{id}', [LeverancierController::class, 'update'])
+        ->name('leverancier.update');
 });
 
 require __DIR__.'/auth.php';

@@ -19,8 +19,11 @@
                         <x-nav-link :href="route('magazijn.index')" :active="request()->routeIs('magazijn.*')">
                             {{ __('Overzicht Magazijn') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('leverancier.index')" :active="request()->routeIs('leverancier.*')">
+                        <x-nav-link :href="route('leverancier.index')" :active="request()->routeIs('leverancier.index') || request()->routeIs('leverancier.producten')">
                             {{ __('Overzicht Leveranciers') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('leverancier.wijzigen')" :active="request()->routeIs('leverancier.wijzigen') || request()->routeIs('leverancier.details') || request()->routeIs('leverancier.edit')">
+                            {{ __('Wijzigen Leveranciers') }}
                         </x-nav-link>
                     @endif
                 </div>
@@ -82,8 +85,11 @@
                 <x-responsive-nav-link :href="route('magazijn.index')" :active="request()->routeIs('magazijn.*')">
                     {{ __('Overzicht Magazijn') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('leverancier.index')" :active="request()->routeIs('leverancier.*')">
+                <x-responsive-nav-link :href="route('leverancier.index')" :active="request()->routeIs('leverancier.index') || request()->routeIs('leverancier.producten')">
                     {{ __('Overzicht Leveranciers') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('leverancier.wijzigen')" :active="request()->routeIs('leverancier.wijzigen') || request()->routeIs('leverancier.details') || request()->routeIs('leverancier.edit')">
+                    {{ __('Wijzigen Leveranciers') }}
                 </x-responsive-nav-link>
             @endif
         </div>
